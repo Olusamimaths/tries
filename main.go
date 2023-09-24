@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Node struct {
 	children map[rune]*Node
@@ -17,6 +20,7 @@ func NewTrie() *Trie {
 
 // Insert a word into the Trie
 func (t *Trie) Insert(word string) {
+	word = stripWord(word)
 	// insert starts from the root
 	node := t.root
 	// loop through each character in the word
@@ -35,6 +39,7 @@ func (t *Trie) Insert(word string) {
 
 // Search for a word in a Trie
 func (t *Trie) Search(word string) bool {
+	word = stripWord(word)
 	// start from the root
 	node := t.root
 	// loop through each character in the word
@@ -52,7 +57,28 @@ func (t *Trie) Search(word string) bool {
 }
 
 func (t *Trie) Delete(word string) {
+	word = stripWord(word)
+}
 
+func (t *Trie) Print() {
+    t.printRecursive(t.root, "")
+}
+
+func (t *Trie) printRecursive(node *Node, currentPrefix string) {
+    if node == nil {
+        return
+    }
+
+    fmt.Printf("(%s, %v) -> ", currentPrefix, node.isEnd)
+
+    for char, childNode := range node.children {
+        t.printRecursive(childNode, currentPrefix+string(char))
+		fmt.Println()
+    }
+}
+
+func stripWord(word string) string {
+	return strings.ToLower(strings.ReplaceAll(word, " ", ""))
 }
 
 func main() {
@@ -63,10 +89,13 @@ func main() {
 		trie.Insert(word)
 	}
 
-	fmt.Println(trie.Search("apple"))
-	fmt.Println(trie.Search("app"))
-	fmt.Println(trie.Search("banana"))
-	fmt.Println(trie.Search("ban"))
-	fmt.Println(trie.Search("cat"))
-	fmt.Println(trie.Search("dog"))
+	// fmt.Println("apple: \t\t", trie.Search("apple"))
+	// fmt.Println("app: \t\t",trie.Search("app"))
+	// fmt.Println("ap: \t\t", trie.Search("ap"))
+	// fmt.Println("banana: \t", trie.Search("banana"))
+	// fmt.Println("ban: \t\t", trie.Search("ban"))
+	// fmt.Println("cat: \t\t",trie.Search("cat"))
+	// fmt.Println("dog: \t\t", trie.Search("dog"))
+
+	trie.Print()
 }
